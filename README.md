@@ -44,6 +44,15 @@ wget https://github.com/aws/aws-sdk-php/releases/download/3.21.3/aws.phar
 service httpd start
 ```
 
+Copy `config-template.php` to `config.php` and populate the values:
+
+```php
+<?php
+$region = "ap-southeast-2";
+$bucket = "s3sign-bucket";
+?>
+```
+
 Testing
 -------
 
