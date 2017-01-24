@@ -42,8 +42,9 @@ foreach ($iterator as $object) {
 </table>
 <p>
 <ul>
-<li><i>The unsigned URLs may return an error depending on the ACL of the file.</i></li>
-<li><i>The signed URLs expire in <b><?=$expire ?></b>. Reload the page to refresh the URLs.</i></li>
+<li>If you don't see any objects in the table above either your IAM Policy is incorrect or you have no files in <b><?=$bucket?></b> bucket.</li>
+<li>The unsigned URLs may return an error depending on the ACL of the file.</li>
+<li>The signed URLs expire in <b><?=$expire ?></b>. Reload the page to refresh the URLs.</li>
 </ul>
 </p>
 <p>Source code is available here: <a href="https://github.com/mludvig/aws-s3sign-demo">https://github.com/mludvig/aws-s3sign-demo</a>.</p>
