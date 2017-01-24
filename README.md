@@ -30,6 +30,7 @@ Preparation
        ]
    }
    ```
+   Don't forget to update the bucket name in *Resource* block if it's different from `s3sign-bucket`!
 
 Installation
 ------------
