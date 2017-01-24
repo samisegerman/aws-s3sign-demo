@@ -22,13 +22,14 @@ Preparation
                    "s3:Put*"
                ],
                "Resource": [
-                   "arn:aws:s3:::<u>s3sign-bucket</u>",
-                   "arn:aws:s3:::<u>s3sign-bucket</u>/*"
+                   "arn:aws:s3:::s3sign-bucket",
+                   "arn:aws:s3:::s3sign-bucket/*"
                ],
                "Effect": "Allow"
            }
        ]
    }
+   ```
 
 Installation
 ------------
@@ -48,7 +49,7 @@ Testing
 
 1. Upload some files and images to `s3sign-bucket` with Private ACL
 
-2. Browse to **http://{IP.AD.DR.ES}/**
+2. Browse to **http://{IP.AD.DR.ES}/index.php**
 
 Results
 -------
@@ -76,6 +77,7 @@ Accessing an _expired_ *Signed URL* will return an error like this:
   <RequestId>B176...42679</RequestId>
   <HostId>L3Q+...5RGrv52k=</HostId>
 </Error>
+```
 
 Author
 ------
