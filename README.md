@@ -54,6 +54,13 @@ $bucket = "s3sign-bucket";
 ?>
 ```
 
+CloudFormation
+--------------
+
+Instead of following the manual steps above you can use the
+included CloudFormation template `s3-sign-demo.json` that
+sets us the environment the same way.
+
 Testing
 -------
 
