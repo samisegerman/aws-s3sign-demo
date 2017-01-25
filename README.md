@@ -1,6 +1,8 @@
 AWS S3 Signed URL demo
 ======================
 
+For more details and information check out the [blog post on aws.nz](https://aws.nz/best-practice/s3-presigned-url/).
+
 Preparation
 -----------
 
