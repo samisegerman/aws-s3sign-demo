@@ -13,7 +13,7 @@ include 'config.php';
 </head>
 <body>
 <h1>AWS S3 Pre-signed URL demo</h1>
-<p>Upload files and images to S3 Bucket <b><a href="https://console.aws.amazon.com/s3/home?region=<?=$region?>&bucket=<?=$bucket?>&prefix=" target="_blank"><?=$bucket?></a></b> to test the signed and unsigned access.</p>
+<p>Upload files and images to S3 Bucket <b><a href="https://console.aws.amazon.com/s3/home?region=<?=$region?>&amp;bucket=<?=$bucket?>&amp;prefix=" target="_blank"><?=$bucket?></a></b> to test the signed and unsigned access.</p>
 <table border='1'>
 <tr><td><b>Object</b></td><td><b>Unsigned URL</b></td><td><b>Signed URL</b></td></tr>
 <?php
@@ -42,7 +42,7 @@ foreach ($iterator as $object) {
 </table>
 <p>
 <ul>
-<li>If you don't see any objects in the table above either your IAM Policy is incorrect or you have no files in <b><?=$bucket?></b> bucket.</li>
+<li>If you don't see any objects in the table above either your IAM Policy is incorrect or you have no files in <b><a href="https://console.aws.amazon.com/s3/home?region=<?=$region?>&amp;bucket=<?=$bucket?>&amp;prefix=" target="_blank"><?=$bucket?></a></b> bucket.</li>
 <li>The unsigned URLs may return an error depending on the ACL of the file.</li>
 <li>The signed URLs expire in <b><?=$expire ?></b>. Reload the page to refresh the URLs.</li>
 </ul>
