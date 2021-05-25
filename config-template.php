@@ -1,4 +1,5 @@
 <?php
 # Copy to config.php and populate the variables
-$region = "ap-southeast-2";
-$bucket = "???";
+$region = "REGION_PLACEHOLDER";
+$bucket = "BUCKET_PLACEHOLDER";
+?>

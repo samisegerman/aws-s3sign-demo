@@ -1,0 +1,149 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Signed-URL demo providing access to a Private S3 Bucket
+Metadata:
+  Author: Michael Ludvig - https://aws.nz
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC Id of target VPC
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: The subnet where this instance should be deployed
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair for SSH access to the EC2 instance.
+      May be empty to disable SSH access.
+    Default: ''
+  ImageId:
+    Type: AWS::EC2::Image::Id
+    Default: "ami-047bb4163c506cd98"
+    Description: Amazon Linux AMI ID
+Conditions:
+  HaveKeyName:
+    Fn::Not:
+    - Fn::Equals:
+      - Ref: KeyName
+      - ''
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+  AccessPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: S3_Access_Policy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:List*
+          - s3:Get*
+          - s3:PutObject*
+          - s3:DeleteObject*
+          Resource:
+          - Fn::Join:
+            - ''
+            - - 'arn:aws:s3:::'
+              - Ref: Bucket
+          - Fn::Join:
+            - ''
+            - - 'arn:aws:s3:::'
+              - Ref: Bucket
+              - "/*"
+
+      Roles:
+      - Ref: InstanceRole
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+          - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - Ref: InstanceRole
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Instance Security Group
+      VpcId:
+        Ref: VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId:
+        Ref: ImageId
+      InstanceType: t2.micro
+      KeyName:
+        Fn::If:
+        - HaveKeyName
+        - Ref: KeyName
+        - Ref: AWS::NoValue
+      SubnetId:
+        Ref: SubnetId
+      SecurityGroupIds:
+      - Ref: InstanceSecurityGroup
+      IamInstanceProfile:
+        Ref: InstanceProfile
+      UserData:
+          "Fn::Base64": !Sub |
+              #!/bin/bash
+              exec >> /var/log/user-data.log 2>&1
+              echo "User data start"
+              export PATH="/usr/local/bin:$PATH"
+              echo "---------------------------------------------------------------------------------------"
+              echo "Install SSM Agent"
+              echo "---------------------------------------------------------------------------------------"
+              rpm -qa | grep amazon-ssm-agent || yum -y install https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+              echo "---------------------------------------------------------------------------------------"
+              echo "Finished Install SSM Agent"
+              echo "---------------------------------------------------------------------------------------"
+              yum install http24 php56 -y
+              yum install git -y
+              cd /var/www/html
+              git clone https://github.com/samisegerman/aws-s3sign-demo.git .
+              wget https://github.com/aws/aws-sdk-php/releases/download/3.21.3/aws.phar
+              service httpd start
+              cp config-template.php config.php
+              sed -i 'REGION_PLACEHOLDER/s//${AWS::Region}/' config.php
+              sed -i 'BUCKET_PLACEHOLDER/s//${Bucket}/' config.php
+
+  InstanceElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId:
+        Ref: Instance
+Outputs:
+  ElasticIP:
+    Description: Elastic IP address
+    Value:
+      Ref: InstanceElasticIP
+  URL:
+    Description: Test URL
+    Value:
+      Fn::Join:
+      - ''
+      - - http://
+        - Ref: InstanceElasticIP
+        - "/index.php"
