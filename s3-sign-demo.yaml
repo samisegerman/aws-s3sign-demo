@@ -128,12 +128,12 @@ Resources:
               yum install git -y
               sleep 10
               cd /var/www/html
-              git clone https://github.com/samisegerman/aws-s3sign-demo.git
+              git clone https://github.com/samisegerman/aws-s3sign-demo.git /var/www/html
               wget https://github.com/aws/aws-sdk-php/releases/download/3.21.3/aws.phar
               service httpd start
               cp /var/www/html/config-template.php /var/www/html/config.php
-              sed -i 'REGION_PLACEHOLDER/s//${AWS::Region}/' /var/www/html/config.php
-              sed -i 'BUCKET_PLACEHOLDER/s//${Bucket}/' /var/www/html/config.php
+              sed -i "s/REGION_PLACEHOLDER/${AWS::Region}/g;" /var/www/html/config.php
+              sed -i "s/BUCKET_PLACEHOLDER/${Bucket}/g;" /var/www/html/config.php
 
   InstanceElasticIP:
     Type: AWS::EC2::EIP
