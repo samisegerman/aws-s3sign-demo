@@ -47,7 +47,6 @@ foreach ($iterator as $object) {
 <li>The signed URLs expire in <b><?=$expire ?></b>. Reload the page to refresh the URLs.</li>
 </ul>
 </p>
-<p>Source code is available here: <a href="https://github.com/mludvig/aws-s3sign-demo">https://github.com/mludvig/aws-s3sign-demo</a>.</p>
-<address>By <a href="https://aws.nz/">Michael Ludvig</a></address>
+<address>By saseger</a></address>
 </body>
 </html>
