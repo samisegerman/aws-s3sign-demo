@@ -29,6 +29,11 @@ Resources:
   Bucket:
     Type: AWS::S3::Bucket
     Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: TRUE
+        BlockPublicPolicy: TRUE
+        IgnorePublicAcls: TRUE
+        RestrictPublicBuckets: TRUE
       AccessControl: Private
   AccessPolicy:
     Type: AWS::IAM::Policy
@@ -121,13 +126,14 @@ Resources:
               echo "---------------------------------------------------------------------------------------"
               yum install http24 php56 -y
               yum install git -y
+              sleep 10
               cd /var/www/html
-              git clone https://github.com/samisegerman/aws-s3sign-demo.git .
+              git clone https://github.com/samisegerman/aws-s3sign-demo.git
               wget https://github.com/aws/aws-sdk-php/releases/download/3.21.3/aws.phar
               service httpd start
-              cp config-template.php config.php
-              sed -i 'REGION_PLACEHOLDER/s//${AWS::Region}/' config.php
-              sed -i 'BUCKET_PLACEHOLDER/s//${Bucket}/' config.php
+              cp /var/www/html/config-template.php /var/www/html/config.php
+              sed -i 'REGION_PLACEHOLDER/s//${AWS::Region}/' /var/www/html/config.php
+              sed -i 'BUCKET_PLACEHOLDER/s//${Bucket}/' /var/www/html/config.php
 
   InstanceElasticIP:
     Type: AWS::EC2::EIP
